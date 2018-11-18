@@ -1,3 +1,6 @@
+class army():
+    #this is just a set of battlegroups, but we'll want to put condititions on this.
+
 class battlegroup():
     # ditto with squad, might want to get everything else going first.
     # maxSquads is 3
