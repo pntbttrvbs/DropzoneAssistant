@@ -1,28 +1,35 @@
 class unit():
     def __init__(self):
-        self.armour
-        self.movementSpeed
-        self.countermeasures
-        self.damagePoints
-        self.pointsCost
-        self.type
-        self.category
-        self.squadSize
-        self.coherency
-        self.transportOptions
-        self.special
-        self.weapons
+        self.statMappings = {'A': 'armour', 'Mv': 'movement speed', 'CM':'countermeasures','DP':'damage points',
+                        'Pts':'points', 'Type':'type', 'Category':'category', 'S':'squad size', 'C':'coherency',
+                        'T':'transport options', 'Special':'special', 'WEAPONS':'weapons'}
 
-
-        pass
+        self.stats = {stat:None for stat in self.statMappings.values()}
+        self.stats['coherency'] = 3
+        self.stats['weapons'] = []
 
     __doc__ = "A single model or infantry base is known as a ‘Unit’. " \
               "There are three basic types of these encountered on the battlefield; infantry, vehicles and aircraft."
 
+    def __setitem__(self,key,value):
+        if key in self.statMappings:
+            key = self.statMappings[key]
+        self.stats[key] = value
+
+    def __getitem__(self,key):
+        if key in self.statMappings:
+            key = self.statMappings[key]
+        return self.stats[key]
+
+    def __repr__(self):
+        return str(self.stats)
 
 class infantry(unit):
-    self.cqb
-    self.fortitude
+    def __init__(self, **kwargs):
+        super(infantry, self).__init__(**kwargs)
+        self.statMappings['cqb'] = 'close quarter battle'
+        self.statMappings['F'] = 'fortitude'
+
     __doc__ = """Infantry are soldiers who fight on foot. 
             They are normally slow, poorly armoured, and extremely vulnerable in the open.
             However, infantry are highly useful Units and are often essential to victory. 
@@ -43,6 +50,8 @@ class infantry(unit):
     pass
 
 class vehicle(unit):
+    def __init__(self, **kwargs):
+        super(vehicle, self).__init__(**kwargs)
 
     __doc__ =  """
             Vehicles are ground based, armoured Units which represent an army’s core fighting force. 
@@ -66,7 +75,10 @@ class vehicle(unit):
     pass
 
 class aircraft(unit):
-    self.landingZone
+    def __init__(self, **kwargs):
+        super(aircraft, self).__init__(**kwargs)
+        self.statMappings['LZ'] = 'landing zone'
+
     __doc__ = """
             Air superiority is often essential to successful operations. 
             
@@ -91,4 +103,16 @@ class aircraft(unit):
             """
 
     pass
+
+class weapon(unit):
+    def __init__(self):
+        self.statMappings = {'E':'energy', 'Sh':'shots','Ac':'accuracy','R(f)':'full range','R(c)':'countered range','Mf':'move and fire','Arc':'arc of fire', 'Special':'special'}
+        self.stats = {stat:None for stat in self.statMappings.values()}
+
+    __doc__ = """
+            Most Units are equipped with weapons capable of delivering death and destruction to the enemy. 
+            The offensive capabilities of a Unit (if it has any) are represented by its Weapons Stat Sheet.
+            """
+
+
 

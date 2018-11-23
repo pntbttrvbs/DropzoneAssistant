@@ -1,5 +1,12 @@
 class army():
-    #this is just a set of battlegroups, but we'll want to put condititions on this.
+    #this is a set of battlegroups, but we'll want to put condititions on this.
+    #point size is one of the key features!
+    def __init__(self):
+        self.battlegroups = []
+
+    @Property
+    def pts_size(self):
+        return sum(battlegroup.pts_size() for battlegroup in self.battlegroups)
 
 class battlegroup():
     # ditto with squad, might want to get everything else going first.
