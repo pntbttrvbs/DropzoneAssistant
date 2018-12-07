@@ -1,8 +1,11 @@
 import kivy
+from kivy.uix.behaviors import ButtonBehavior
+
 kivy.require('1.10.1')
 
+from army import army
+
 from kivy.app import App
-from kivy.base import runTouchApp
 from kivy.uix.spinner import Spinner
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.boxlayout import BoxLayout
@@ -18,28 +21,53 @@ Config.write()
 
 class armyBuilder(App):
 
+
     def build_config(self, config):
-        config.setdefaults('Rulesets', {'Rule Version':'V2.4.1 (beta)', 'Unit Master':'Michigan (2018)'})
+        config.setdefaults('Rulesets', {'Rule Version':'V2.4.1 (beta)',
+                                        'Unit Master':'Michigan (2018)'})
 
     def build(self):
-        top = topBar()
-        return top
+        self.newArmy = army()
+        self.root = root = RootWidget()
+        return root
 
-
-class topBar(BoxLayout):
+class RootWidget(BoxLayout):
     def __init__(self, **kwargs):
-        super(topBar, self).__init__(**kwargs)
+        super(RootWidget, self).__init__(**kwargs)
+
+        self.add_widget(ArmyHeader())
+        #self.add_widget(armyRosterBar())
+        #self.add_widget(inventoryBar())
+
+class ArmyHeader(BoxLayout):
+    def __init__(self, **kwargs):
+        super(ArmyHeader, self).__init__(**kwargs)
         self.orientation = 'horizontal'
-        self.size_hint =(1,0.1)
-        #point this depending on faction choice
-        self.add_widget(Image(source = 'Images/ucmlogo.jpg'))
-        self.add_widget(pointsLayout())
-        print(self.children)
+        self.size_hint =(1,0.5)
+        self.add_widget(ArmyNameWidget())
+        self.add_widget(RosterWidget())
+        self.add_widget(PointsWidget())
 
-
-class pointsLayout(BoxLayout):
+class ArmyNameWidget(BoxLayout):
     def __init__(self, **kwargs):
-        super(pointsLayout, self).__init__(**kwargs)
+        super(ArmyNameWidget, self).__init__(**kwargs)
+        self.orientation = 'horizontal'
+        #self.add_widget(Image(source = 'Images/ucmlogo.jpg'))
+        self.add_widget(Spinner(
+            text = 'Faction',
+            values = ('UCM', 'Scourge','PHR','Shaltari','Resistance')
+        ))
+        #self.add_widget()
+
+class RosterWidget(BoxLayout):
+    def __init__(self, **kwargs):
+        super(RosterWidget, self).__init__(**kwargs)
+        self.orientation = 'horizontal'
+
+
+class PointsWidget(BoxLayout):
+    def __init__(self, **kwargs):
+        super(PointsWidget, self).__init__(**kwargs)
         self.orientation = 'vertical'
 
         self.gamesizeSpinner = gamesizeSelector(
@@ -58,7 +86,6 @@ class pointsLayout(BoxLayout):
         #let's think about putting a method into this class to update the value?
         self.add_widget(self.gamesizeSpinner)
         self.add_widget(self.pointsBar)
-        print(self.children)
 
 
 class gamesizeSelector(Spinner):
@@ -72,12 +99,6 @@ class gamesizeSelector(Spinner):
     def _on_dropdown_select(self, instance, data, *largs):
         self.text = self.GamesizeLabel(data)
         self.is_open = False
-
-
-class battlegroupsSummaryLayout(BoxLayout):
-    def __init__(self, **kwargs):
-        super(battlegroupsSummaryLayout, self).__init__(**kwargs)
-        self.orientation = 'horizontal'
 
 
 if __name__ == '__main__':

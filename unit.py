@@ -5,7 +5,7 @@ class unit():
                         'T':'transport options', 'Special':'special', 'WEAPONS':'weapons'}
 
         self.stats = {stat:None for stat in self.statMappings.values()}
-        self.stats['coherency'] = 3
+        self.stats['coherency'] = 'Standard (3 inches)'
         self.stats['weapons'] = []
 
     __doc__ = "A single model or infantry base is known as a ‘Unit’. " \

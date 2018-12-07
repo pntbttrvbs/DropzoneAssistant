@@ -3,9 +3,11 @@ class army():
     #point size is one of the key features!
     def __init__(self):
         self.battlegroups = []
+        self.faction = None
+        self.name = None
 
-    @Property
     def pts_size(self):
+        return 1500
         return sum(battlegroup.pts_size() for battlegroup in self.battlegroups)
 
 class battlegroup():
