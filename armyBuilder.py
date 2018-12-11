@@ -19,7 +19,6 @@ Config.write()
 
 class armyBuilder(App):
 
-    global newArmy
     newArmy = army()
     armyFaction = StringProperty(newArmy.faction)
 
