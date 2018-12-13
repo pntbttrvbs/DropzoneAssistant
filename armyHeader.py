@@ -12,7 +12,6 @@ class ArmyHeader(BoxLayout):
     def __init__(self, **kwargs):
         super(ArmyHeader, self).__init__(**kwargs)
         self.orientation = 'horizontal'
-        self.size_hint =(1,0.5)
         self.add_widget(ArmyNameWidget())
         self.add_widget(RosterWidget())
         self.add_widget(PointsWidget())

@@ -4,14 +4,17 @@ from kivy.uix.behaviors import ButtonBehavior
 kivy.require('1.10.1')
 
 from army import army
+from unitThumb import unitThumbnail
+from pickle import load
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.config import Config
-from kivy.uix.image import Image
 from kivy.properties import NumericProperty,ListProperty,StringProperty
 
+
 from armyHeader import ArmyHeader
+from inventoryBar import inventoryBar
 
 Config.read('dropzoneAssistant.ini')
 Config.set('kivy','window_icon', 'Images/Dropzone-Commander-logo.jpg')
@@ -36,10 +39,8 @@ class RootWidget(BoxLayout):
         super(RootWidget, self).__init__(**kwargs)
         self.orientation = 'vertical'
         self.add_widget(ArmyHeader())
-        self.add_widget(Image(source = None))
         #self.add_widget(armyRosterBar())
-        #self.add_widget(inventoryBar())
-
+        self.add_widget(inventoryBar())
 
 if __name__ == '__main__':
     armyBuilder().run()
