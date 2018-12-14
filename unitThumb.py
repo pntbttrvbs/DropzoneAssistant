@@ -10,8 +10,9 @@ class unitThumbnail (BoxLayout):
     def __init__(self, unit, **kwargs):
         super(unitThumbnail, self).__init__(**kwargs)
         self.orientation = 'vertical'
+        self.spacing = 10
         self.unit = unit
-        self.imagePathPrefix = 'Images\\' + unit.faction.lower() + '\\' + 'Scourge_'
+        self.imagePathPrefix = 'Images\\' + unit.faction.lower() + '\\' + unit.faction + '_'
         self.imagePath =  '_'.join(word for word in unit.name.split()) + '.png'
         self.add_widget(Image(source = self.imagePathPrefix + self.imagePath))
         self.add_widget(Label(text = self.unit.name))
