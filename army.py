@@ -1,21 +1,68 @@
 from unit import unit
+from collections.abc import MutableSequence
 
-class grouping(list):
-    def __init__(self,*args, name = None, faction = None, **kwargs):
-        super(grouping,self).__init__(*args,**kwargs)
+class Grouping(MutableSequence):
+
+    @classmethod
+    def getClassName(cls):
+        return cls.__name__
+
+    def __init__(self,*args, name = None, faction = None, trait = None, **kwargs):
+        super(Grouping, self).__init__(*args, **kwargs)
+        self.members = []
         self.faction = faction
         self.name = name
+        self.trait = trait
 
+    def check(self, value):
+        if self[self.trait]:
+            if value[self.trait] != self[self.trait]:
+                raise TypeError(value)
 
-class masterModels(grouping):
+    def __getitem__(self, item):
+        if type(item) is int:
+            return self.members[item]
+        else:
+            values = []
+
+            for member in self.members:
+                values.append(member[item])
+            #the grouping doesn't yet have a member that confines its trait
+            if len(values) == 0:
+                return None
+            #these would be individual values, such as HP.
+            if len(set(values)) > 1:
+                return values
+            #these would be collective values, such as category, coherency.
+            else:
+                return values[0]
+
+    def __setitem__(self, key, value):
+        self.check(value)
+        self.members[key] = value
+
+    def __len__(self): return len(self.members)
+
+    def __delitem__(self, key): del self.members[key]
+
+    def insert(self, index: int, object: _T):
+        self.check(object)
+        self.members.insert(index,object)
+
+    def __repr__(self):
+        return self.getClassName() + ': ' + repr(self.members)
+
+class masterModels(Grouping):
     def __init__(self,*args, **kwargs):
         super(masterModels, self).__init__(*args,**kwargs)
 
-class army(grouping):
+class army(Grouping):
     def __init__(self, *args, **kwargs):
         super(army,self).__init__(*args,**kwargs)
 
 class battlegroup():
+    def __init__(self, *args, **kwargs):
+        super(battlegroup, self).__init__(*args,**kwargs)
 
     __doc__ = """
             A Battlegroup is a collection of Squads which are activated together (see ‘The Turn Sequence’). 
@@ -26,7 +73,7 @@ class battlegroup():
             """
 
 
-class squad(unit, grouping):
+class squad(unit, Grouping):
     __doc__ = """
             Units normally operate in groups known as ‘Squads’ and as part of a larger formation known as a Battlegroup.
              Your army will usually be made up of several Battlegroups. 

@@ -17,8 +17,8 @@ class ArmyHeader(BoxLayout):
         self.add_widget(PointsWidget())
 
 class ArmyNameWidget(BoxLayout):
-    faction = StringProperty()
-    factionLogo = Image(source=None, size_hint=(0.75, 1))
+    faction = StringProperty(None)
+    factionLogo = Image(size_hint=(0.75, 1))
     factionSpinner = Spinner(
         text='Select your faction',
         values=('UCM', 'Scourge', 'PHR', 'Shaltari', 'Resistance')
@@ -36,7 +36,6 @@ class ArmyNameWidget(BoxLayout):
         #todo link this faction selection to the inventory/unit display panel
         #todo check if you can use rebind in the Property instead of accessing the image source directly.
         self.faction = text
-        print(self.faction)
         imagesource = 'Images/' + text.lower() + '/' + text + '.png'
         self.factionLogo.source = imagesource
         #todo add exception/popup in case army has currPoint value > 0
