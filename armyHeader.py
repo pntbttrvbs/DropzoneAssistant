@@ -6,39 +6,23 @@ from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.progressbar import ProgressBar
 from kivy.app import App
-from kivy.properties import NumericProperty, StringProperty
+from kivy.properties import NumericProperty, StringProperty, ObjectProperty
 
 class ArmyHeader(BoxLayout):
     def __init__(self, **kwargs):
         super(ArmyHeader, self).__init__(**kwargs)
         self.orientation = 'horizontal'
-        self.add_widget(ArmyNameWidget())
+        self.add_widget(FactionSelector())
         self.add_widget(RosterWidget())
         self.add_widget(PointsWidget())
 
-class ArmyNameWidget(BoxLayout):
+class FactionSelector(BoxLayout):
+
     faction = StringProperty(None)
-    factionLogo = Image(size_hint=(0.75, 1))
-    factionSpinner = Spinner(
-        text='Select your faction',
-        values=('UCM', 'Scourge', 'PHR', 'Shaltari', 'Resistance')
-    )
 
-    def __init__(self, **kwargs):
-        super(ArmyNameWidget, self).__init__(**kwargs)
-        self.orientation = 'horizontal'
-        self.add_widget(self.factionLogo)
-        self.factionSpinner.bind(text=self._update_faction)
-        self.add_widget(self.factionSpinner)
-        #self.add_widget()
+    #todo add exception/popup in case army has currPoint value > 0
+    #todo link this faction selection to the facInv/unit display panel
 
-    def _update_faction(self, spinner, text):
-        #todo link this faction selection to the inventory/unit display panel
-        #todo check if you can use rebind in the Property instead of accessing the image source directly.
-        self.faction = text
-        imagesource = 'Images/' + text.lower() + '/' + text + '.png'
-        self.factionLogo.source = imagesource
-        #todo add exception/popup in case army has currPoint value > 0
 
 
 class RosterWidget(BoxLayout):

@@ -39,14 +39,14 @@ class CoreStatSheet(GridLayout):
 
 
 class InventoryGrid(GridLayout):
+    faction = StringProperty(None)
+
     def __init__(self,  **kwargs):
         super(InventoryGrid,self).__init__(**kwargs)
-
-
-    def refresh(self, invFac):
-        faction = invFac
-        invPath = 'Data\MasterUnitLists\\' + faction.lower() + '.p'
-        if faction != '':
+        self.faction = 'scourge'
+        fac = 'scourge'
+        invPath = 'Data\MasterUnitLists\\' + fac.lower() + '.p'
+        if self.faction != '':
             with open(invPath, 'rb') as P:
                 inventory = load(P)
             self.clear_widgets()

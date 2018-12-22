@@ -20,11 +20,11 @@ class unit(object):
         return cls.__name__
 
     def __init__(self, name, faction):
-        self.name = name
-        self.faction = faction
-        self.baseStats = {}
-        self.baseStats['coherency'] = 'Standard (3 inches)'
-        self.baseStats['weapons'] = []
+        self.baseStats = base = {}
+        base['faction'] = faction
+        base['name'] = name
+        base['coherency'] = 'Standard (3 inches)'
+        base['weapons'] = []
 
 
     def __setitem__(self,key,value):
@@ -35,10 +35,13 @@ class unit(object):
     def __getitem__(self,key):
         if key in self.statMappings:
             key = self.statMappings[key]
-        return self.baseStats[key]
+        value = self.baseStats[key]
+        if type(value) is str:
+            value = value.replace('*','')
+        return value
 
     def __repr__(self):
-        return "A " + self.getClassName() + ' named ' + self.name + ' with these stats: ' + str(self.baseStats)
+        return "A " + self.getClassName() + ' named ' + self['name'] + ' with these stats: ' + str(self.baseStats)
 
 class infantry(unit):
 
@@ -120,6 +123,8 @@ class weapon(unit):
 
     def __init__(self, *args):
         super(weapon, self).__init__(*args)
+        del self.baseStats['weapons']
+        del self.baseStats['coherency']
 
 
 

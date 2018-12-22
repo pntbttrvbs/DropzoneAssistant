@@ -3,7 +3,7 @@ from kivy.uix.behaviors import ButtonBehavior
 
 kivy.require('1.10.1')
 
-from army import army
+from groupings import army
 from UnitDisplay import unitThumbnail
 from pickle import load
 

@@ -1,41 +1,49 @@
 from unit import unit
-from collections.abc import MutableSequence
+from collections.abc import MutableMapping
 
-class Grouping(MutableSequence):
+class Grouping(MutableMapping):
 
     @classmethod
     def getClassName(cls):
         return cls.__name__
 
-    def __init__(self,*args, name = None, faction = None, trait = None, **kwargs):
+    def __init__(self, *args, trait = None, **kwargs):
         super(Grouping, self).__init__(*args, **kwargs)
-        self.members = []
-        self.faction = faction
-        self.name = name
-        self.trait = trait
+        self.group_trait = trait
+        self.members = {}
 
-    def check(self, value):
-        if self[self.trait]:
-            if value[self.trait] != self[self.trait]:
-                raise TypeError(value)
+
+    def check(self, object):
+        trait = self.group_trait
+        if trait and self[trait] and object[trait]:
+            if object[trait] != self[trait]:
+                raise TypeError(trait + ' is not equal!',object[trait], self[trait])
 
     def __getitem__(self, item):
-        if type(item) is int:
+        if item in self.members.keys():
             return self.members[item]
-        else:
-            values = []
 
-            for member in self.members:
-                values.append(member[item])
-            #the grouping doesn't yet have a member that confines its trait
-            if len(values) == 0:
-                return None
-            #these would be individual values, such as HP.
-            if len(set(values)) > 1:
+        values = []
+
+        for member in self.members:
+            v = member[item]
+            if type(v) is str:
+                v = v.replace('*','')
+            values.append(v)
+        #the grouping doesn't yet have a member that confines its trait
+        if len(values) == 0:
+            return None
+        #these would be individual values, such as HP.
+        if len(values) > 1:
+            try:
+                v = set(values)
+                if len(v) == 1:
+                    return v.pop()
+            except:
                 return values
-            #these would be collective values, such as category, coherency.
-            else:
-                return values[0]
+        #these would be collective values, such as category, coherency.
+        else:
+            return values[0]
 
     def __setitem__(self, key, value):
         self.check(value)
@@ -45,25 +53,20 @@ class Grouping(MutableSequence):
 
     def __delitem__(self, key): del self.members[key]
 
-    def insert(self, index: int, object: _T):
-        self.check(object)
-        self.members.insert(index,object)
+    def __iter__(self): iter(self.members)
 
     def __repr__(self):
-        return self.getClassName() + ': ' + repr(self.members)
-
-class masterModels(Grouping):
-    def __init__(self,*args, **kwargs):
-        super(masterModels, self).__init__(*args,**kwargs)
+        return self.getClassName() + ', (' + self.group_trait + ',' + self[self.group_trait] + ')'
 
 class army(Grouping):
     def __init__(self, *args, **kwargs):
         super(army,self).__init__(*args,**kwargs)
+        self.group_trait = 'faction'
 
-class battlegroup():
+class battlegroup(Grouping):
     def __init__(self, *args, **kwargs):
         super(battlegroup, self).__init__(*args,**kwargs)
-
+        #self.group_trait = 'category'
     __doc__ = """
             A Battlegroup is a collection of Squads which are activated together (see ‘The Turn Sequence’). 
             A typical Battlegroup will contain between 1 and 3 Squads. Battlegroups normally consist of complementary 

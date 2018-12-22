@@ -2,33 +2,47 @@ import csv
 import os
 import pickle
 import unit
-import army
+import groupings
 
 version = 'V2.4.1 (beta)'
 source = 'Michigan GT 2018'
 #for file in directory:
 # TODO: save michigan GT files, iterate through each.
-# TODO: review pickle documentation, figure out how to store these inventory lists most effectively.
+# TODO: review pickle documentation, figure out how to store these facInv lists most effectively.
+
+inventory = groupings.Grouping()
+
 for file in os.listdir():
     if file[-3:] != 'csv':
         continue
     faction = file.split('.')[0]
+    newUnits = []
+    category = None
     with open(file, newline='') as csvstats:
         statreader = csv.reader(csvstats, delimiter =',')
         curr = None
         nextRow = False
         weapons = False
-        inventory = army.masterModels(name = faction , faction = faction)
+        facInv = groupings.Grouping(trait ='faction')
+        categories = {}
         for row in statreader:
-            print(' '.join(row))
+            print(row)
             if row[1] == 'A':
                 statHeaders = row
                 nextRow = True
-            elif nextRow:
+            elif nextRow and row[0] != 'WEAPONS':
                 stats = row
-                nextRow = False
                 name = statHeaders[0]
+                if row[0]:
+                    name = name + ' - ' + row[0]
                 type = stats[6].lower()
+                if type == '':
+                    nextRow = False
+                    continue
+                category = stats[7].lower()
+                category = category.replace('*','')
+                if category not in categories:
+                    categories[category] = groupings.Grouping(trait = 'category')
                 if type.lower() == 'walker':
                     type = 'vehicle'
                     stats[10] = stats[10] + ', walker'
@@ -36,18 +50,23 @@ for file in os.listdir():
                     type = type[:-1]
                     stats[10] = stats[10] + ', this unit may not enter structures'
                 evalString = 'unit.' + type + '(name,faction)'
-                print(evalString)
-                newUnit = eval(evalString)
-                for key,value in zip(statHeaders,stats):
+                x = eval(evalString)
+                newUnits.append(x)
+                for key,value in zip(statHeaders[1:],stats[1:]):
                     if key:
                         if '+' in key:
                             key = key.split('+')
                             value = value.split()
-                            newUnit[key[0]] = value[0]
-                            if len(value)> 1:
-                                newUnit[key[1]] = value[1]
+                            for newUnit in newUnits:
+                                newUnit[key[0]] = value[0]
+                                if len(value)> 1:
+                                    newUnit[key[1]] = value[1]
                         else:
-                            newUnit[key] = value
+                            if key == 'Special':
+                                value = value.split(',')
+                            for newUnit in newUnits:
+                                newUnit[key] = value
+
             elif row[0] == 'WEAPONS':
                 statHeaders = row
                 weapons = True
@@ -55,19 +74,29 @@ for file in os.listdir():
                 stats = row
                 if stats[0]:
                     if not stats[3]:
-                        newUnit['special'] = newUnit['special'] + stats[0]
+                        for newUnit in newUnits:
+                            newUnit['special'].append(stats[0])
                     else:
                         weaponName = stats[0]
                         newWeapon = unit.weapon(weaponName,faction)
-                        for key,value in zip(statHeaders,stats):
+                        for key,value in zip(statHeaders[1:],stats[1:]):
                             if key:
                                 newWeapon[key] = value
-                        newUnit['weapons'].append(newWeapon)
+                        for newUnit in newUnits:
+                            newUnit['weapons'].append(newWeapon)
                 else:
                     weapons = False
-                    inventory.append(newUnit)
+                    nextRow = False
+                    while newUnits:
+                        categories[category].append(newUnits.pop())
+        while newUnits:
+            categories[category].append(newUnits.pop())
+        for c in categories:
+            facInv.append(categories[c])
+    inventory.append(facInv)
 
-    pickle.dump(inventory, open(faction+'.p', 'wb'))
+
+pickle.dump(inventory, open('master_inventory.p', 'wb'))
 
 
 
