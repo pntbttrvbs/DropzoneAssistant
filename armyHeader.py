@@ -16,14 +16,11 @@ class ArmyHeader(BoxLayout):
         self.add_widget(RosterWidget())
         self.add_widget(PointsWidget())
 
-class FactionSelector(BoxLayout):
 
+class FactionSelector(BoxLayout):
     faction = StringProperty(None)
 
     #todo add exception/popup in case army has currPoint value > 0
-    #todo link this faction selection to the facInv/unit display panel
-
-
 
 class RosterWidget(BoxLayout):
     def __init__(self, **kwargs):

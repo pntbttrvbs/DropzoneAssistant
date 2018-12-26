@@ -1,7 +1,7 @@
 from unit import unit
-from collections.abc import MutableMapping
+from collections.abc import MutableSequence
 
-class Grouping(MutableMapping):
+class Grouping(MutableSequence):
 
     @classmethod
     def getClassName(cls):
@@ -10,7 +10,7 @@ class Grouping(MutableMapping):
     def __init__(self, *args, trait = None, **kwargs):
         super(Grouping, self).__init__(*args, **kwargs)
         self.group_trait = trait
-        self.members = {}
+        self.members = []
 
 
     def check(self, object):
@@ -20,7 +20,7 @@ class Grouping(MutableMapping):
                 raise TypeError(trait + ' is not equal!',object[trait], self[trait])
 
     def __getitem__(self, item):
-        if item in self.members.keys():
+        if type(item) is int:
             return self.members[item]
 
         values = []
@@ -53,20 +53,22 @@ class Grouping(MutableMapping):
 
     def __delitem__(self, key): del self.members[key]
 
-    def __iter__(self): iter(self.members)
+    def insert(self, index, object):
+        self.check(object)
+        self.members.insert(index,object)
 
     def __repr__(self):
-        return self.getClassName() + ', (' + self.group_trait + ',' + self[self.group_trait] + ')'
+        return self.getClassName() + ': ' + repr(self.members)
 
 class army(Grouping):
     def __init__(self, *args, **kwargs):
         super(army,self).__init__(*args,**kwargs)
-        self.group_trait = 'faction'
+        #self.group_trait = 'faction'
 
 class battlegroup(Grouping):
     def __init__(self, *args, **kwargs):
         super(battlegroup, self).__init__(*args,**kwargs)
-        #self.group_trait = 'category'
+        self.group_trait = 'category'
     __doc__ = """
             A Battlegroup is a collection of Squads which are activated together (see ‘The Turn Sequence’). 
             A typical Battlegroup will contain between 1 and 3 Squads. Battlegroups normally consist of complementary 

@@ -10,7 +10,7 @@ source = 'Michigan GT 2018'
 # TODO: save michigan GT files, iterate through each.
 # TODO: review pickle documentation, figure out how to store these facInv lists most effectively.
 
-inventory = groupings.Grouping()
+inventory = {}
 
 for file in os.listdir():
     if file[-3:] != 'csv':
@@ -23,8 +23,7 @@ for file in os.listdir():
         curr = None
         nextRow = False
         weapons = False
-        facInv = groupings.Grouping(trait ='faction')
-        categories = {}
+        facInv = {}
         for row in statreader:
             print(row)
             if row[1] == 'A':
@@ -41,8 +40,8 @@ for file in os.listdir():
                     continue
                 category = stats[7].lower()
                 category = category.replace('*','')
-                if category not in categories:
-                    categories[category] = groupings.Grouping(trait = 'category')
+                if category not in facInv:
+                    facInv[category] = []
                 if type.lower() == 'walker':
                     type = 'vehicle'
                     stats[10] = stats[10] + ', walker'
@@ -88,12 +87,12 @@ for file in os.listdir():
                     weapons = False
                     nextRow = False
                     while newUnits:
-                        categories[category].append(newUnits.pop())
+                        print(category)
+                        print(facInv)
+                        facInv[category].append(newUnits.pop())
         while newUnits:
-            categories[category].append(newUnits.pop())
-        for c in categories:
-            facInv.append(categories[c])
-    inventory.append(facInv)
+            facInv[category].append(newUnits.pop())
+    inventory[faction] = facInv
 
 
 pickle.dump(inventory, open('master_inventory.p', 'wb'))

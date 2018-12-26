@@ -4,7 +4,7 @@ from kivy.uix.behaviors import ButtonBehavior
 kivy.require('1.10.1')
 
 from groupings import army
-from UnitDisplay import unitThumbnail
+from UnitDisplay import UnitThumbnail
 from pickle import load
 
 from kivy.app import App

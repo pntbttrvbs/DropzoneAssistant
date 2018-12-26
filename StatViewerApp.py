@@ -1,16 +1,16 @@
 from kivy.app import App
-from kivy.properties import StringProperty, ObjectProperty
+from kivy.properties import StringProperty, ObjectProperty, ListProperty
 from kivy.uix.image import Image
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.scrollview import ScrollView
+from pickle import load
 
 from armyHeader import FactionSelector
-from UnitDisplay import InventoryGrid
+from UnitDisplay import UnitThumbnail
 
 
 class Overmind(RelativeLayout):
-    ModelsMaster = ObjectProperty(None, rebind = True)
+    inventory = ObjectProperty(None, rebind = True)
     current_faction = StringProperty('')
 
 
@@ -18,6 +18,8 @@ class Overmind(RelativeLayout):
         self.g.refresh(value)
 
 class StatViewerApp(App):
+    with open('Data\MasterUnitLists\master_inventory.p', 'rb') as file:
+        ModelsMaster = load(file)
 
     def build(self):
 #        self.factionSpinner.bind(faction = self.on_faction)
