@@ -123,7 +123,7 @@ class weapon(unit):
 
     def __init__(self, *args):
         super(weapon, self).__init__(*args)
-        del self.baseStats['weapons']
+        #del self.baseStats['weapons']
         del self.baseStats['coherency']
 
 
