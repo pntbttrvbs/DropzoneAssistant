@@ -9,6 +9,7 @@ from kivy.properties import StringProperty, ObjectProperty, ListProperty
 
 class UnitThumbnail(ButtonBehavior, BoxLayout):
     displayedStat = StringProperty('Pts')
+    imageSource = StringProperty('')
     unit = ObjectProperty(None, rebind = True)
 
     def changeDisplayedStat(self, newStat):
@@ -18,7 +19,8 @@ class UnitThumbnail(ButtonBehavior, BoxLayout):
         popup = CoreStatPopup(self.unit)
         popup.open()
 
-#todo - separate this out into a corestat sheet, and a popup class. The popup class will enumerate weapons and special skills - which will each get their own corestat row.
+
+
 class CoreStatSheet(BoxLayout):
     unit = ObjectProperty(None, rebind = True)
     unit_name = StringProperty('')
@@ -44,8 +46,13 @@ class CoreStatPopup(Popup):
         )
         for item in self.parts:
             c.add_widget(CoreStatSheet(item))
+        if 'special' in unit.baseStats:
+            c.add_widget((StatLabel(text = 'Special')))
+            for spec in unit['specialtext']:
+                c.add_widget(StatLabel(text = spec))
         self.add_widget(c)
 
 
-
+class StatLabel(Label):
+    pass
 

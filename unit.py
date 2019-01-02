@@ -1,3 +1,5 @@
+import os
+
 class unit(object):
     statMappings = {'A': 'armour', 'Mv': 'movement speed', 'CM': 'countermeasures', 'DP': 'damage points',
                     'Pts': 'points', 'Type': 'type', 'Category': 'category', 'S': 'squad size', 'C': 'coherency',
@@ -25,6 +27,7 @@ class unit(object):
         base['name'] = name
         base['coherency'] = 'Standard (3 inches)'
         base['weapons'] = []
+        base['specialtext'] = []
 
 
     def __setitem__(self,key,value):
@@ -36,12 +39,22 @@ class unit(object):
         if key in self.statMappings:
             key = self.statMappings[key]
         value = self.baseStats[key]
-        if type(value) is str:
-            value = value.replace('*','')
+        #if type(value) is str:
+        #    value = value.replace('*','')
         return value
 
     def __repr__(self):
         return "A " + self.getClassName() + ' named ' + self['name'] + ' with these stats: ' + str(self.baseStats)
+
+    def image_source(self):
+        f = self['faction']
+        n = '_'.join(word for word in self['name'].split())
+        t = 'Images\\' + f.lower() + '\\' + f + '_'
+        x = t + n +'.png'
+        if os.path.isfile(x):
+            return x
+        else:
+            return t[:-1] + '.png'
 
 class infantry(unit):
 
