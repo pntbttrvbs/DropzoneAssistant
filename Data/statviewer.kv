@@ -76,7 +76,7 @@ Overmind:
     RecycleView:
         id: RV
         viewclass: 'StatLabel'
-        data: [{'text': '\n'.join([stat] + (root.unit[stat] if type(root.unit[stat]) is list else [root.unit[stat]]))} for stat in root.unit_stats if stat is not 'WEAPONS' and root.unit.statMappings[stat] in root.unit.baseStats]
+        data: [{'text': '\n'.join([stat] + root.unit[stat] if type(root.unit[stat]) is list else [root.unit[stat]])} for stat in root.unit_stats if stat is not 'WEAPONS' and root.unit.statMappings[stat] in root.unit.baseStats]
         #data: [{'text': stat + '\n' + root.unit[stat]} for stat in root.unit_stats if stat not in ['WEAPONS','Special'] and root.unit.statMappings[stat] in root.unit.baseStats]
         #data: [{'text': stat} for stat in root.unit_stats if stat not in ['WEAPONS','Special']] +
          #[{'text': root.unit[stat]and root.unit.statMappings[stat] in root.unit.baseStats]
