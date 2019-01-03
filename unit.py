@@ -46,15 +46,24 @@ class unit(object):
     def __repr__(self):
         return "A " + self.getClassName() + ' named ' + self['name'] + ' with these stats: ' + str(self.baseStats)
 
-    def image_source(self):
+    def imageSource(self):
         f = self['faction']
         n = '_'.join(word for word in self['name'].split())
         t = 'Images\\' + f.lower() + '\\' + f + '_'
-        x = t + n +'.png'
+        P = self._absolutePath(t)
+        x = P + n +'.png'
         if os.path.isfile(x):
             return x
         else:
             return t[:-1] + '.png'
+
+    def _absolutePath(self, relPath):
+        try:
+            basePath = sys._MEIPASS
+        except:
+            basePath = os.path.abspath(".")
+        return os.path.join(basePath, relPath)
+
 
 class infantry(unit):
 

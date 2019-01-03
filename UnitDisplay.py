@@ -5,6 +5,7 @@ from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.properties import StringProperty, ObjectProperty, ListProperty
+from unit import unit
 
 
 class UnitThumbnail(ButtonBehavior, BoxLayout):
