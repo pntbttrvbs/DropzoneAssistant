@@ -3,6 +3,7 @@ from kivy.properties import StringProperty, ObjectProperty, ListProperty
 from kivy.uix.image import Image
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.relativelayout import RelativeLayout
+from kivy.lang.builder import Builder
 from pickle import load
 import os
 
@@ -14,7 +15,7 @@ class Overmind(RelativeLayout):
     inventory = ObjectProperty(None, rebind = True)
     current_faction = StringProperty('')
 
-class StatViewerApp(App):
+class StatViewer(App):
 
     def _absolutePath(cls, relPath):
         try:
@@ -29,11 +30,11 @@ class StatViewerApp(App):
         ModelsMaster = load(file)
 
     def build(self):
-        return self.root
+        return Builder.load_file(self._absolutePath('Data\statviewer.kv'))
 
 
 
 
 
 if __name__ == '__main__':
-    StatViewerApp().run()
+    StatViewer().run()
