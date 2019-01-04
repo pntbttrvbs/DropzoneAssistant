@@ -1,15 +1,11 @@
 from kivy.app import App
-from kivy.properties import StringProperty, ObjectProperty, ListProperty
-from kivy.uix.image import Image
-from kivy.uix.anchorlayout import AnchorLayout
+from kivy.properties import StringProperty, ObjectProperty
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.lang.builder import Builder
 from pickle import load
 import os
 
-from armyHeader import FactionSelector
 from UnitDisplay import UnitThumbnail
-
 
 class Overmind(RelativeLayout):
     inventory = ObjectProperty(None, rebind = True)

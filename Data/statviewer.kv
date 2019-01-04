@@ -1,3 +1,6 @@
+#:include factionselector.kv
+#:include unitdisplay.kv
+
 Overmind:
     current_faction: faction_selector.faction
     inventory: app.ModelsMaster[root.current_faction] if root.current_faction != 'Select your faction:' else None
@@ -11,9 +14,6 @@ Overmind:
             size_hint: (0.25,0.2)
             orientation: 'horizontal'
 
-    #ScrollView:
-     #   size_hint: (1,0.8)
-
     RecycleView:
         size_hint: (1,0.8)
         viewclass: 'UnitThumbnail'
@@ -21,79 +21,7 @@ Overmind:
         RecycleGridLayout:
             size_hint: (1,None)
             spacing: 10
-            #cols: 5
-            #col_default_width: self.width//5
-            cols: root.width//110
+            default_size: 150,200
+            row_force_default: False
+            cols: root.width//(self.default_size[0] + self.spacing[0])
             height: self.minimum_height
-            #on_height: self.setter('height')
-
-<FactionSelector>:
-    faction: facspin.text
-
-    Image:
-        size_hint: (0.75,1)
-        allow_stretch: False
-        #source: 'Images\\' + root.faction + '\\' + root.faction + '.png' if root.faction != 'Select your faction:' else None
-        source: app._absolutePath('Images\\' + root.faction + '\\' + root.faction + '.png') if root.faction != 'Select your faction:' else ''
-    Spinner:
-        id: facspin
-        text: 'Select your faction:'
-        values: (faction for faction in app.ModelsMaster)
-
-<UnitThumbnail>:
-    orientation: 'vertical'
-    spacing: 2
-    #todo - set fixed dimensions for these thumbnails!
-    #todo fix these conditional statements
-    #todo - images aren't properly updating!
-    Image:
-        allow_stretch: False
-        source: root.unit.imageSource() if root.unit else None
-
-    Label:
-        text: root.unit['name'] + '\n' + root.unit[root.displayedStat] + ' ' + root.displayedStat if root.unit else ' '
-        text_size: root.width, None
-        halign: 'center'
-
-
-<CoreStatPopup>:
-    #size_hint:(1,1)
-    #width: 2000
-    title: self.unit_name
-
-#todo - can I fix this to fit the corestats onto one sheet?
-#todo - add longpress/hover to give full name of stat value
-<CoreStatSheet>:
-    #width: 2000
-    size_hint:(1,1)
-    orientation: "vertical"
-    Label:
-        size_hint_y: 0.25
-        text_size: self.size
-        size: self.texture_size
-        text: root.unit_name
-        halign: 'left'
-    RecycleView:
-        id: RV
-        viewclass: 'StatLabel'
-        data: [{'text': '\n'.join([stat] + root.unit[stat] if type(root.unit[stat]) is list else [root.unit[stat]])} for stat in root.unit_stats if stat is not 'WEAPONS' and root.unit.statMappings[stat] in root.unit.baseStats]
-        #data: [{'text': stat + '\n' + root.unit[stat]} for stat in root.unit_stats if stat not in ['WEAPONS','Special'] and root.unit.statMappings[stat] in root.unit.baseStats]
-        #data: [{'text': stat} for stat in root.unit_stats if stat not in ['WEAPONS','Special']] +
-         #[{'text': root.unit[stat]and root.unit.statMappings[stat] in root.unit.baseStats]
-        RecycleGridLayout:
-            canvas.before:
-                Color:
-                    rgba: 1,0,0,1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-            rows: 1
-            size_hint_x: None
-            width: self.minimum_width
-
-
-<StatLabel>
-    valign: 'top'
-    text_size: self.size
-    size: self.texture_size
-    #height: self.minimum_height

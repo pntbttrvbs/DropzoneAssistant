@@ -17,7 +17,6 @@ class UnitThumbnail(ButtonBehavior, BoxLayout):
         self.displayedStat = newStat
 
     def on_press(self):
-        print(self.width)
         popup = CoreStatPopup(self.unit)
         popup.open()
 

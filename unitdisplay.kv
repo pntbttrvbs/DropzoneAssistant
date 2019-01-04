@@ -1,0 +1,51 @@
+<UnitThumbnail>:
+    orientation: 'vertical'
+    spacing: 2
+    #todo - should we get rid of the conditional statements
+
+    Image:
+        allow_stretch: False
+        source: root.unit.imageSource() if root.unit else None
+
+    Label:
+        text: root.unit['name'] + '\n' + root.unit[root.displayedStat] + ' ' + root.displayedStat if root.unit else ' '
+        text_size: root.width, None
+        size: self.texture_size
+        halign: 'center'
+
+
+<CoreStatPopup>:
+    #size_hint:(0.75,0.75)
+    title: self.unit_name
+
+#todo - add longpress/hover to give full name of stat value
+<CoreStatSheet>:
+    size_hint:(1,1)
+    orientation: "vertical"
+    Label:
+        size_hint_y: 0.25
+        text_size: self.size
+        size: self.texture_size
+        text: root.unit_name
+        halign: 'left'
+    RecycleView:
+        id: RV
+        viewclass: 'StatLabel'
+        data: [{'text': '\n'.join([stat] + root.unit[stat] if type(root.unit[stat]) is list else [root.unit[stat]])} for stat in root.unit_stats if stat is not 'WEAPONS' and root.unit.statMappings[stat] in root.unit.baseStats]
+        RecycleGridLayout:
+            canvas.before:
+                Color:
+                    rgba: 1,0,0,1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            rows: 1
+            size_hint_x: None
+            width: self.minimum_width
+
+
+<StatLabel>
+    valign: 'top'
+    text_size: self.size
+    size: self.texture_size
+
