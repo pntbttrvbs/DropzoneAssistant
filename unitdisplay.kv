@@ -6,6 +6,7 @@
     Image:
         allow_stretch: False
         source: root.unit.imageSource() if root.unit else None
+        mipmap: True
 
     Label:
         text: root.unit['name'] + '\n' + root.unit[root.displayedStat] + ' ' + root.displayedStat if root.unit else ' '
