@@ -6,11 +6,14 @@
         size_hint: (0.75,1)
         opacity: 0
         allow_stretch: False
-        source: app._absolutePath('Images\\' + root.faction + '\\' + root.faction + '.png') if root.faction != 'Select your faction:' else ''
+        source: app._absolutePath('Images\\' + root.faction + '\\' + root.faction + '.png')
         mipmap: True
     Spinner:
         id: facspin
         text: 'Select your faction:'
+        text_size: self.size
+        halign: 'center'
+        valign: 'center'
         values: (faction for faction in app.ModelsMaster)
         #should be 1, set to 5 because I like the green highlight.
         on_text: facimage.opacity = 5

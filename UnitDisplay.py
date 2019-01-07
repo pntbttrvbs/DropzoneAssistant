@@ -1,5 +1,6 @@
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
@@ -47,13 +48,22 @@ class CoreStatPopup(Popup):
         )
         for item in self.parts:
             c.add_widget(CoreStatSheet(item))
+
+        #todo nix this 'parts' property and just add unit, weapons, special. models weapons as special is below.
+        #todo: make this a recycleview, so scrolling is possible.
+        #todo: fix wrap on special text.
+        #todo: I can probably make these labels below a simple template...
         if 'special' in unit.baseStats:
-            c.add_widget((StatLabel(text = 'Special')))
+
+            x = (Label(text ='Special',
+                        size_hint = (None,None),
+                        halign='left'))
+            x.bind(texture_size = x.setter('size'))
+            c.add_widget(x)
+
             for spec in unit['specialtext']:
-                c.add_widget(StatLabel(text = spec))
+                x = Label(text = spec,
+                          size_hint = (None,None))
+                x.bind(texture_size = x.setter('size'))
+                c.add_widget(x)
         self.add_widget(c)
-
-
-class StatLabel(Label):
-    pass
-

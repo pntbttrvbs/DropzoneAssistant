@@ -1,4 +1,4 @@
-import os
+import os, sys
 
 class unit(object):
     statMappings = {'A': 'armour', 'Mv': 'movement speed', 'CM': 'countermeasures', 'DP': 'damage points',
@@ -58,10 +58,7 @@ class unit(object):
             return t[:-1] + '.png'
 
     def _absolutePath(self, relPath):
-        try:
-            basePath = sys._MEIPASS
-        except:
-            basePath = os.path.abspath(".")
+        basePath = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
         return os.path.join(basePath, relPath)
 
 
