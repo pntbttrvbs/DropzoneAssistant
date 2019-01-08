@@ -1,7 +1,5 @@
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
@@ -20,8 +18,6 @@ class UnitThumbnail(ButtonBehavior, BoxLayout):
     def on_press(self):
         popup = CoreStatPopup(self.unit)
         popup.open()
-
-
 
 class CoreStatSheet(BoxLayout):
     units = ListProperty([])
@@ -49,7 +45,6 @@ class CoreStatSheet(BoxLayout):
                     t = '\n'.join(t)
                 values.append(t)
 
-
 class CoreStatPopup(Popup):
 
     def __init__(self, unit,**kwargs):
@@ -58,15 +53,12 @@ class CoreStatPopup(Popup):
         self.container = c = BoxLayout(
             orientation = 'vertical'
         )
-        u = CoreStatSheet(sheet_name = unit['name'], units = [unit])
+        u = CoreStatSheet(sheet_name = unit['name'], units = [unit], size_hint_y = None)
         c.add_widget(u)
         if 'weapons' in unit:
             c.add_widget(CoreStatSheet(sheet_name = 'Weapons', units = unit['WEAPONS']))
 
-        if 'special' in unit.baseStats:
-            x = SheetLabel(text ='Special')
-            c.add_widget(x)
-
+        if 'specialtext' in unit.baseStats and unit.baseStats['specialtext']:
             for spec in unit['specialtext']:
                 x = SpecLabel(text = spec)
                 c.add_widget(x)

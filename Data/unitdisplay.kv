@@ -1,7 +1,6 @@
 <UnitThumbnail>:
     orientation: 'vertical'
     spacing: 2
-    #todo - should we get rid of the conditional statements
 
     Image:
         allow_stretch: False
@@ -16,44 +15,41 @@
 
 
 <CoreStatPopup>:
-    size_hint:(0.75,0.75)
-    #title: self.unit_name
+    size_hint:(0.8,0.8)
 
 #todo - add longpress/hover to give full name of stat value
 <CoreStatSheet>:
-    size_hint: (1, 1)
     orientation: "vertical"
-    height: self.minimum_height
     SheetLabel:
+        id: SL
         text: root.sheet_name
 
     RecycleView:
         id: RV
         viewclass: 'ValLabel'
-        data:[{'text':x,} for x in root.headers]+[{'text':(y if y else '')} for y in root.values]
+        data:[{'text':x} for x in root.headers]+[{'text':(y if y else '')} for y in root.values]
         RecycleGridLayout:
-            canvas.before:
-                Color:
-                    rgba: 1,0,0,1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
             cols: max(1,len(root.headers))
             spacing: 10
+            default_size: 1,1
             size_hint_x: None
             width: self.minimum_width
-            #height: self.minimum_height
 
 <SheetLabel@Label>
-    size_hint_y: 0.25
+    size_hint_y: None
     text_size: self.size
     size: self.texture_size
     halign: 'left'
 
 <ValLabel@Label>
+    background_color: 1,0,0,1
     size: self.texture_size
     halign: 'center'
     valign: 'bottom'
 
 <SpecLabel@Label>
     text_size: root.width, None
+    size: self.texture_size
+    size_hint_y: None
+    #halign: 'center'
+    #valign: 'bottom'
