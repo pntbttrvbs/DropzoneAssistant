@@ -16,56 +16,44 @@
 
 
 <CoreStatPopup>:
-    #size_hint:(0.75,0.75)
-    title: self.unit_name
+    size_hint:(0.75,0.75)
+    #title: self.unit_name
 
 #todo - add longpress/hover to give full name of stat value
 <CoreStatSheet>:
-    size_hint: (1, None)
+    size_hint: (1, 1)
     orientation: "vertical"
-    Label:
-        size_hint_y: 0.25
-        text_size: self.size
-        size: self.texture_size
-        text: root.unit_name
-        halign: 'left'
+    height: self.minimum_height
+    SheetLabel:
+        text: root.sheet_name
+
     RecycleView:
         id: RV
-        viewclass: 'StatCell'
-        #data: [{'text': '\n'.join([stat] + (root.unit[stat] if type(root.unit[stat]) is list else [root.unit[stat]]))} for stat in root.unit_stats if stat is not 'WEAPONS' and root.unit.statMappings[stat] in root.unit.baseStats]
-        data: [{'statText': stat,'valText': 'n'.join(root.unit[stat]) if type(root.unit[stat]) is list else root.unit[stat]} for stat in root.unit_stats if stat is not 'WEAPONS' and root.unit.statMappings[stat] in root.unit.baseStats]
-        #RecycleGridLayout:
-        RecycleBoxLayout:
+        viewclass: 'ValLabel'
+        data:[{'text':x,} for x in root.headers]+[{'text':(y if y else '')} for y in root.values]
+        RecycleGridLayout:
             canvas.before:
                 Color:
                     rgba: 1,0,0,1
                 Rectangle:
                     pos: self.pos
                     size: self.size
-            orientation: 'horizontal'
-            #rows: 1
-            default_size: 80,80
-            spacing: 5
+            cols: max(1,len(root.headers))
+            spacing: 10
             size_hint_x: None
             width: self.minimum_width
+            #height: self.minimum_height
 
-#todo: can I make these cell sizes flexible depending on contents?
-#should I make this flexible to hold multiple values? would be good for stacking the weapons.
-<StatCell@BoxLayout>
-    orientation: 'vertical'
-    statText: ''
-    valText: ''
-    width: stat.width
-    Label:
-        id: stat
-        text: root.statText
-        text_size: root.width, None
-        size: self.texture_size
-    Label:
-        id: val
-        text: root.valText
-        text_size: root.width, None
-        size: self.texture_size
-        halign: 'center'
-        valign: 'bottom'
+<SheetLabel@Label>
+    size_hint_y: 0.25
+    text_size: self.size
+    size: self.texture_size
+    halign: 'left'
 
+<ValLabel@Label>
+    size: self.texture_size
+    halign: 'center'
+    valign: 'bottom'
+
+<SpecLabel@Label>
+    text_size: root.width, None

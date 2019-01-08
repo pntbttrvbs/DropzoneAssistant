@@ -24,46 +24,57 @@ class UnitThumbnail(ButtonBehavior, BoxLayout):
 
 
 class CoreStatSheet(BoxLayout):
-    unit = ObjectProperty(None, rebind = True)
-    unit_name = StringProperty('')
-    unit_stats = ListProperty([])
+    units = ListProperty([])
+    sheet_name = StringProperty('')
+    headers = ListProperty([])
+    values = ListProperty([])
 
-    def __init__(self, unit,**kwargs):
-        super(CoreStatSheet, self).__init__(**kwargs)
-        self.unit = unit
-        self.unit_name = self.unit['name']
-        self.unit_stats = self.unit.statMappings.keys()
+    def on_units(self, instance, value):
+        self.headers = []
+        h = self.headers
+        self.values = []
+        values = self.values
+        o = value[0]
+        if self.sheet_name != o['name']:
+            h.append('Name')
+        for stat in o.statMappings.keys():
+            if stat in o and stat != 'WEAPONS':
+                h.append(stat)
+        for v in value:
+            for s in h:
+                if s == 'Name':
+                    s = 'name'
+                t = v[s]
+                if type(t) is list:
+                    t = '\n'.join(t)
+                values.append(t)
 
 
 class CoreStatPopup(Popup):
-    unit_name = StringProperty('')
-    parts = ListProperty([])
 
     def __init__(self, unit,**kwargs):
         super(CoreStatPopup, self).__init__(**kwargs)
-        self.unit_name = unit['name']
-        self.parts = [unit] + unit['weapons']
+        self.title = unit['name']
         self.container = c = BoxLayout(
             orientation = 'vertical'
         )
-        for item in self.parts:
-            c.add_widget(CoreStatSheet(item))
+        u = CoreStatSheet(sheet_name = unit['name'], units = [unit])
+        c.add_widget(u)
+        if 'weapons' in unit:
+            c.add_widget(CoreStatSheet(sheet_name = 'Weapons', units = unit['WEAPONS']))
 
-        #todo nix this 'parts' property and just add unit, weapons, special. models weapons as special is below.
-        #todo: make this a recycleview, so scrolling is possible.
-        #todo: fix wrap on special text.
-        #todo: I can probably make these labels below a simple template...
         if 'special' in unit.baseStats:
-
-            x = (Label(text ='Special',
-                        size_hint = (None,None),
-                        halign='left'))
-            x.bind(texture_size = x.setter('size'))
+            x = SheetLabel(text ='Special')
             c.add_widget(x)
 
             for spec in unit['specialtext']:
-                x = Label(text = spec,
-                          size_hint = (None,None))
-                x.bind(texture_size = x.setter('size'))
+                x = SpecLabel(text = spec)
                 c.add_widget(x)
+
         self.add_widget(c)
+
+class SpecLabel(Label):
+    pass
+
+class SheetLabel(Label):
+    pass
