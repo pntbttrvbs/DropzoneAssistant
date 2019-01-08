@@ -1,5 +1,5 @@
-#:include factionselector.kv
-#:include unitdisplay.kv
+#:include data\factionselector.kv
+#:include data\unitdisplay.kv
 
 Overmind:
     current_faction: faction_selector.faction
@@ -22,6 +22,5 @@ Overmind:
             size_hint: (1,None)
             spacing: 10
             default_size: 150,200
-            row_force_default: False
             cols: root.width//(self.default_size[0] + self.spacing[0])
             height: self.minimum_height

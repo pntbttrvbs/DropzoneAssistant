@@ -1,4 +1,4 @@
-import os
+import os, sys
 
 class unit(object):
     statMappings = {'A': 'armour', 'Mv': 'movement speed', 'CM': 'countermeasures', 'DP': 'damage points',
@@ -38,10 +38,14 @@ class unit(object):
     def __getitem__(self,key):
         if key in self.statMappings:
             key = self.statMappings[key]
-        value = self.baseStats[key]
+        if key in self.baseStats:
+            return self.baseStats[key]
         #if type(value) is str:
         #    value = value.replace('*','')
-        return value
+        #return value
+
+    def __contains__(self, item):
+        return bool(self.__getitem__(item))
 
     def __repr__(self):
         return "A " + self.getClassName() + ' named ' + self['name'] + ' with these stats: ' + str(self.baseStats)
@@ -58,10 +62,7 @@ class unit(object):
             return t[:-1] + '.png'
 
     def _absolutePath(self, relPath):
-        try:
-            basePath = sys._MEIPASS
-        except:
-            basePath = os.path.abspath(".")
+        basePath = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
         return os.path.join(basePath, relPath)
 
 
@@ -145,7 +146,7 @@ class weapon(unit):
 
     def __init__(self, *args):
         super(weapon, self).__init__(*args)
-        #del self.baseStats['weapons']
+        del self.baseStats['weapons']
         del self.baseStats['coherency']
 
 

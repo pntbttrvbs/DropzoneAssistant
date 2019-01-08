@@ -1,6 +1,5 @@
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
@@ -20,40 +19,54 @@ class UnitThumbnail(ButtonBehavior, BoxLayout):
         popup = CoreStatPopup(self.unit)
         popup.open()
 
-
-
 class CoreStatSheet(BoxLayout):
-    unit = ObjectProperty(None, rebind = True)
-    unit_name = StringProperty('')
-    unit_stats = ListProperty([])
+    units = ListProperty([])
+    sheet_name = StringProperty('')
+    headers = ListProperty([])
+    values = ListProperty([])
 
-    def __init__(self, unit,**kwargs):
-        super(CoreStatSheet, self).__init__(**kwargs)
-        self.unit = unit
-        self.unit_name = self.unit['name']
-        self.unit_stats = self.unit.statMappings.keys()
-
+    def on_units(self, instance, value):
+        self.headers = []
+        h = self.headers
+        self.values = []
+        values = self.values
+        o = value[0]
+        if self.sheet_name != o['name']:
+            h.append('Name')
+        for stat in o.statMappings.keys():
+            if stat in o and stat != 'WEAPONS':
+                h.append(stat)
+        for v in value:
+            for s in h:
+                if s == 'Name':
+                    s = 'name'
+                t = v[s]
+                if type(t) is list:
+                    t = '\n'.join(t)
+                values.append(t)
 
 class CoreStatPopup(Popup):
-    unit_name = StringProperty('')
-    parts = ListProperty([])
 
     def __init__(self, unit,**kwargs):
         super(CoreStatPopup, self).__init__(**kwargs)
-        self.unit_name = unit['name']
-        self.parts = [unit] + unit['weapons']
+        self.title = unit['name']
         self.container = c = BoxLayout(
             orientation = 'vertical'
         )
-        for item in self.parts:
-            c.add_widget(CoreStatSheet(item))
-        if 'special' in unit.baseStats:
-            c.add_widget((StatLabel(text = 'Special')))
+        u = CoreStatSheet(sheet_name = unit['name'], units = [unit], size_hint_y = None)
+        c.add_widget(u)
+        if 'weapons' in unit:
+            c.add_widget(CoreStatSheet(sheet_name = 'Weapons', units = unit['WEAPONS']))
+
+        if 'specialtext' in unit.baseStats and unit.baseStats['specialtext']:
             for spec in unit['specialtext']:
-                c.add_widget(StatLabel(text = spec))
+                x = SpecLabel(text = spec)
+                c.add_widget(x)
+
         self.add_widget(c)
 
-
-class StatLabel(Label):
+class SpecLabel(Label):
     pass
 
+class SheetLabel(Label):
+    pass

@@ -1,0 +1,55 @@
+<UnitThumbnail>:
+    orientation: 'vertical'
+    spacing: 2
+
+    Image:
+        allow_stretch: False
+        source: root.unit.imageSource() if root.unit else None
+        mipmap: True
+
+    Label:
+        text: root.unit['name'] + '\n' + root.unit[root.displayedStat] + ' ' + root.displayedStat if root.unit else ' '
+        text_size: root.width, None
+        size: self.texture_size
+        halign: 'center'
+
+
+<CoreStatPopup>:
+    size_hint:(0.8,0.8)
+
+#todo - add longpress/hover to give full name of stat value
+<CoreStatSheet>:
+    orientation: "vertical"
+    SheetLabel:
+        id: SL
+        text: root.sheet_name
+
+    RecycleView:
+        id: RV
+        viewclass: 'ValLabel'
+        data:[{'text':x} for x in root.headers]+[{'text':(y if y else '')} for y in root.values]
+        RecycleGridLayout:
+            cols: max(1,len(root.headers))
+            spacing: 10
+            default_size: 1,1
+            size_hint_x: None
+            width: self.minimum_width
+
+<SheetLabel@Label>
+    size_hint_y: None
+    text_size: self.size
+    size: self.texture_size
+    halign: 'left'
+
+<ValLabel@Label>
+    background_color: 1,0,0,1
+    size: self.texture_size
+    halign: 'center'
+    valign: 'bottom'
+
+<SpecLabel@Label>
+    text_size: root.width, None
+    size: self.texture_size
+    size_hint_y: None
+    #halign: 'center'
+    #valign: 'bottom'
